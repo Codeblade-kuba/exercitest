@@ -7,6 +7,7 @@ import { HeaderComponent } from './layout/header/header.component';
 import { HomepageComponent } from './pages/homepage/homepage.component';
 import { SignUpComponent } from './pages/sign-up/sign-up.component';
 import { HeadingComponent } from './components/heading/heading.component';
+import { InputComponent } from './components/input/input.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { HeadingComponent } from './components/heading/heading.component';
     HomepageComponent,
     SignUpComponent,
     HeadingComponent,
+    InputComponent,
   ],
   imports: [BrowserModule, AppRoutingModule],
   providers: [],
