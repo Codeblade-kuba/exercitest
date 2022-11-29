@@ -8,6 +8,7 @@ import { HomepageComponent } from './pages/homepage/homepage.component';
 import { SignUpComponent } from './pages/sign-up/sign-up.component';
 import { HeadingComponent } from './components/heading/heading.component';
 import { InputComponent } from './components/input/input.component';
+import { AcceptanceComponent } from './components/acceptance/acceptance.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { InputComponent } from './components/input/input.component';
     SignUpComponent,
     HeadingComponent,
     InputComponent,
+    AcceptanceComponent,
   ],
   imports: [BrowserModule, AppRoutingModule],
   providers: [],
