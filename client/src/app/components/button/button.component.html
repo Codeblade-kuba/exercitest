@@ -1,0 +1,11 @@
+<a *ngIf="href" routerLink="{{ href }}">
+  <ng-container *ngTemplateOutlet="content"></ng-container>
+</a>
+
+<button *ngIf="!href">
+  <ng-container *ngTemplateOutlet="content"></ng-container>
+</button>
+
+<ng-template #content>
+  <ng-content></ng-content>
+</ng-template>
