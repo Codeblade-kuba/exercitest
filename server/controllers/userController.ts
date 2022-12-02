@@ -4,6 +4,37 @@ import jwt from 'jsonwebtoken';
 
 import User from '../model/user';
 
+export const loginUser = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    res.status(400).send({ message: 'Expected to receive email and password' });
+    return;
+  }
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    res.status(401).send({ message: 'Invalid credentials' });
+    return;
+  }
+
+  if (encryptPassword(password, user.salt) !== user.password) {
+    res.status(401).send({ message: 'Invalid credentials' });
+    return;
+  }
+
+  const payload = {
+    user: {
+      id: user.id,
+    },
+  };
+
+  const token = signJwtToken(payload);
+
+  res.status(200).send({ message: 'User authenticated successfully', token, expiresIn: 12000000 });
+};
+
 export const createUser = async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
 
@@ -31,6 +62,7 @@ export const createUser = async (req: Request, res: Response) => {
     res.status(400).send({ message: 'Token sign went wrong' });
     return;
   }
+
   res.status(201).send({ message: 'User created successfully', token });
   return;
 };
