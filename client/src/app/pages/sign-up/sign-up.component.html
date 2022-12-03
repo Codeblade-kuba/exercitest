@@ -1,18 +1,36 @@
 <app-heading>Sign Up</app-heading>
 
-<app-input label="Name" name="name" type="text"></app-input>
-<app-input label="E-mail address" name="e-mail" type="email"></app-input>
-<app-input label="Password" name="password" type="password"></app-input>
-<app-input
-  label="Confirm password"
-  name="confirm-password"
-  type="password"
-></app-input>
+<form [formGroup]="signUpForm" (ngSubmit)="signUp()">
+  <app-input
+    label="Name"
+    name="name"
+    type="text"
+    formControlName="name"
+  ></app-input>
+  <app-input
+    label="E-mail address"
+    name="email"
+    type="email"
+    formControlName="email"
+  ></app-input>
+  <app-input
+    label="Password"
+    name="password"
+    type="password"
+    formControlName="password"
+  ></app-input>
+  <app-input
+    label="Confirm password"
+    name="confirm-password"
+    type="password"
+    formControlName="confirmPassword"
+  ></app-input>
 
-<app-acceptance name="privacy-policy">
-  I accept <a href="#">privacy policy</a>
-</app-acceptance>
+  <app-acceptance name="privacy-policy" formControlName="privacyPolicy">
+    I accept <a href="#">privacy policy</a>
+  </app-acceptance>
 
-<app-button>Sign up</app-button>
-<div>or</div>
-<app-button href="#">Log in</app-button>
+  <app-button>Sign up</app-button>
+  <div>or</div>
+  <app-button href="#">Log in</app-button>
+</form>

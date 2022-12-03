@@ -1,5 +1,10 @@
 <div>
-  <input type="checkbox" name="{{ name }}" id="{{ name }}" />
+  <input
+    type="checkbox"
+    name="{{ name }}"
+    id="{{ name }}"
+    (change)="change()"
+  />
   <label for="{{ name }}">
     <ng-content></ng-content>
   </label>

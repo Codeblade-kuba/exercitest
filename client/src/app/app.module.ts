@@ -10,6 +10,7 @@ import { HeadingComponent } from './components/heading/heading.component';
 import { InputComponent } from './components/input/input.component';
 import { AcceptanceComponent } from './components/acceptance/acceptance.component';
 import { ButtonComponent } from './components/button/button.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,7 @@ import { ButtonComponent } from './components/button/button.component';
     AcceptanceComponent,
     ButtonComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule],
+  imports: [BrowserModule, AppRoutingModule, ReactiveFormsModule],
   providers: [],
   bootstrap: [AppComponent],
 })
