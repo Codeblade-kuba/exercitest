@@ -11,7 +11,7 @@ export class AuthService {
 
   signUp(form: any) {
     this.http
-      .post<any>(`${this.serverRoute}/user/sign-up`, form)
+      .post<any>(`${this.serverRoute}/user/create`, form)
       .subscribe((res) => {
         alert('Signup Successfull');
       });

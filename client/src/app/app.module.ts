@@ -11,6 +11,8 @@ import { InputComponent } from './components/input/input.component';
 import { AcceptanceComponent } from './components/acceptance/acceptance.component';
 import { ButtonComponent } from './components/button/button.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { InputNoticeComponent } from './components/input-notice/input-notice.component';
 
 @NgModule({
   declarations: [
@@ -22,8 +24,9 @@ import { ReactiveFormsModule } from '@angular/forms';
     InputComponent,
     AcceptanceComponent,
     ButtonComponent,
+    InputNoticeComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, ReactiveFormsModule],
+  imports: [BrowserModule, AppRoutingModule, ReactiveFormsModule, HttpClientModule],
   providers: [],
   bootstrap: [AppComponent],
 })
