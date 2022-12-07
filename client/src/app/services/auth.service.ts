@@ -10,10 +10,23 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   signUp(form: any) {
-    this.http
-      .post<any>(`${this.serverRoute}/user/create`, form)
-      .subscribe((res) => {
-        alert('Signup Successfull');
-      });
+    return this.http
+      .post<{ message: string; token: string }>(
+        `${this.serverRoute}/user/create`,
+        form
+      )
+      .subscribe((res) => this.setToken(res.token));
+  }
+
+  getToken() {
+    return localStorage.getItem('token');
+  }
+
+  setToken(token: string) {
+    return localStorage.setItem('token', token);
+  }
+
+  isLoggedIn() {
+    return !!this.getToken();
   }
 }

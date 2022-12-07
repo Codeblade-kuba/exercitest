@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import {
   FormGroup,
@@ -8,6 +9,7 @@ import {
   ValidationErrors,
   FormBuilder,
 } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 
 interface testFn {
@@ -20,10 +22,7 @@ interface testFn {
   styleUrls: ['./sign-up.component.css'],
 })
 export class SignUpComponent {
-  constructor(
-    private formBuilder: FormBuilder,
-    private authService: AuthService
-  ) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   checkPasswords: ValidatorFn = (
     group: AbstractControl
@@ -58,10 +57,10 @@ export class SignUpComponent {
   }
 
   signUp() {
-    console.log(this.signUpForm.errors);
-    // if (this.signUpForm.valid) {
-    //   this.authService.signUp(this.signUpForm.value);
-    //   alert('success');
-    // }
+    if (this.signUpForm.valid) {
+      this.authService.signUp(this.signUpForm.value).add(() => {
+        this.router.navigate(['/dashboard']);
+      });
+    }
   }
 }
