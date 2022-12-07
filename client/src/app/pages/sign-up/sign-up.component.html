@@ -1,0 +1,73 @@
+<app-heading>Sign Up</app-heading>
+
+<form [formGroup]="signUpForm" (ngSubmit)="signUp()">
+  <app-input
+    label="Name"
+    name="name"
+    type="text"
+    formControlName="name"
+  ></app-input>
+  <app-input-notice *ngIf="formControls.name.errors?.['required']">
+    Name is required
+  </app-input-notice>
+  <app-input-notice *ngIf="formControls.name.errors?.['minlength']">
+    Name is too short
+  </app-input-notice>
+  <app-input-notice *ngIf="formControls.name.errors?.['maxlength']">
+    Name is too long
+  </app-input-notice>
+
+  <app-input
+    label="E-mail address"
+    name="email"
+    type="email"
+    formControlName="email"
+  ></app-input>
+  <app-input-notice *ngIf="formControls.email.errors?.['required']">
+    Email is required
+  </app-input-notice>
+  <app-input-notice *ngIf="formControls.email.errors?.['email']">
+    Email is invalid
+  </app-input-notice>
+
+  <app-input
+    label="Password"
+    name="password"
+    type="password"
+    formControlName="password"
+  ></app-input>
+  <app-input-notice *ngIf="formControls.password.errors?.['required']">
+    Password is required
+  </app-input-notice>
+  <app-input-notice *ngIf="formControls.password.errors?.['minlength']">
+    Password is too short
+  </app-input-notice>
+  <app-input-notice *ngIf="formControls.password.errors?.['maxlength']">
+    Password is too long
+  </app-input-notice>
+  <app-input-notice *ngIf="formControls.password.errors?.['pattern']">
+    Password should contain minimum eight characters, at least one uppercase
+    letter, one lowercase letter and one number
+  </app-input-notice>
+
+  <app-input
+    label="Confirm password"
+    name="confirm-password"
+    type="password"
+    formControlName="confirmPassword"
+  ></app-input>
+  <app-input-notice *ngIf="signUpForm.errors?.['notSame']">
+    Passwords do not match
+  </app-input-notice>
+
+  <app-acceptance name="privacy-policy" formControlName="privacyPolicy">
+    I accept <a href="#">privacy policy</a>
+  </app-acceptance>
+  <app-input-notice *ngIf="formControls.privacyPolicy.errors?.['required']">
+    You must agree to our terms
+  </app-input-notice>
+
+  <app-button>Sign up</app-button>
+  <div>or</div>
+  <app-button href="#">Log in</app-button>
+</form>
