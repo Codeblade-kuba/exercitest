@@ -18,12 +18,20 @@ export class AuthService {
       .subscribe((res) => this.setToken(res.token));
   }
 
+  signOut() {
+    return this.removeToken();
+  }
+
   getToken() {
     return localStorage.getItem('token');
   }
 
   setToken(token: string) {
     return localStorage.setItem('token', token);
+  }
+
+  removeToken() {
+    return localStorage.removeItem('token');
   }
 
   isLoggedIn() {
