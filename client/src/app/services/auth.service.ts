@@ -18,6 +18,15 @@ export class AuthService {
       .subscribe((res) => this.setToken(res.token));
   }
 
+  signIn(form: any) {
+    return this.http
+      .post<{ message: string; token: string }>(
+        `${this.serverRoute}/user/login`,
+        form
+      )
+      .subscribe((res) => this.setToken(res.token));
+  }
+
   signOut() {
     return this.removeToken();
   }

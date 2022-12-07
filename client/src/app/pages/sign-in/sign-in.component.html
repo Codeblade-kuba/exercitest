@@ -1,0 +1,21 @@
+<app-heading>Sign In</app-heading>
+
+<form [formGroup]="signInForm" (ngSubmit)="signIn()">
+  <app-input
+    label="E-mail address"
+    name="email"
+    type="email"
+    formControlName="email"
+  ></app-input>
+
+  <app-input
+    label="Password"
+    name="password"
+    type="password"
+    formControlName="password"
+  ></app-input>
+
+  <app-button> Sign in </app-button>
+  <div>or</div>
+  <app-button href="#">Log in</app-button>
+</form>

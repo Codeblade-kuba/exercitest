@@ -14,6 +14,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { InputNoticeComponent } from './components/input-notice/input-notice.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { SignInComponent } from './pages/sign-in/sign-in.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
     ButtonComponent,
     InputNoticeComponent,
     DashboardComponent,
+    SignInComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, ReactiveFormsModule, HttpClientModule],
   providers: [],
