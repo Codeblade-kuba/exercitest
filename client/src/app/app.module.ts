@@ -13,6 +13,7 @@ import { ButtonComponent } from './components/button/button.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { InputNoticeComponent } from './components/input-notice/input-notice.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { InputNoticeComponent } from './components/input-notice/input-notice.com
     AcceptanceComponent,
     ButtonComponent,
     InputNoticeComponent,
+    DashboardComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, ReactiveFormsModule, HttpClientModule],
   providers: [],
