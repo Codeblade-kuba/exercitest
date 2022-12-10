@@ -1,81 +1,22 @@
 import { Request, Response } from 'express';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
-import { Types } from 'mongoose';
 
 import UserModel from '../model/user';
 import { validationResult } from 'express-validator';
 import { User, UserBlueprint, UserPayload } from '../types/user';
-
-export async function loginUserController(req: Request, res: Response) {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) return res.sendStatus(400);
-
-  const { email, password } = req.body;
-
-  const user = await UserModel.findOne<User>({ email });
-
-  if (!user || !verifyUserPassword(user, password)) return res.sendStatus(401);
-
-  const token = createUserJwtToken(user);
-
-  if (!token) return res.sendStatus(401);
-
-  res.status(200).send({ message: 'User authenticated successfully', token, expiresIn: 12000000 });
-}
-
-function verifyUserPassword(user: User, password: string) {
-  return encryptPassword(password, user.salt) !== user.password;
-}
-
-function createUserJwtToken(user: User) {
-  const payload = getUserPayload(user);
-  const token = signJwtToken(payload);
-  return token;
-}
-
-function signJwtToken(payload: {}) {
-  return jwt.sign(payload, getSecretKey());
-}
-
-function getSecretKey() {
-  const secretKey = process.env.JWT_SECRET_KEY;
-
-  if (!secretKey) {
-    console.log('JWT secret key missing!');
-    return '';
-  }
-
-  return secretKey;
-}
-
-function getUserPayload(user: User) {
-  const payload: UserPayload = {
-    user: {
-      id: user._id,
-    },
-  };
-  return payload;
-}
+import { AppException } from '../types/exceptions';
 
 export async function createUserController(req: Request, res: Response) {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) return res.sendStatus(400);
-
-  const { name, email, password } = req.body;
-
-  const userBlueprint = {
-    name,
-    email,
-    password,
-  };
-  const user = createUser(userBlueprint);
-
-  const token = createUserJwtToken(user);
-
-  if (!token) return res.sendStatus(401);
-
-  res.status(201).send({ message: 'User created successfully', token });
+  try {
+    checkReqForErrors(req);
+    const { name, email, password } = req.body;
+    const user = createUser({ name, email, password });
+    const token = createTokenForUser(user);
+    res.status(201).send({ message: 'User created successfully', token });
+  } catch (error) {
+    handleAppErrors(res, error);
+  }
 }
 
 function createUser(userBlueprint: UserBlueprint): User {
@@ -96,4 +37,71 @@ function generateHexSalt() {
 
 function encryptPassword(password: string, salt: string) {
   return crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+}
+
+export async function loginUserController(req: Request, res: Response) {
+  try {
+    checkReqForErrors(req);
+    const { email, password } = req.body;
+    const user = await getUser(email, password);
+    const token = createTokenForUser(user);
+    return res
+      .status(200)
+      .send({ message: 'User authenticated successfully', token, expiresIn: process.env.JWT_EXPIRES_IN });
+  } catch (error) {
+    handleAppErrors(res, error);
+  }
+}
+
+async function getUser(email: string, password: string) {
+  const user = await UserModel.findOne<User>({ email });
+  if (!user || !verifyUserPassword(user, password)) throw { httpCode: 401 } as AppException;
+
+  return user;
+}
+
+function verifyUserPassword(user: User, password: string) {
+  return encryptPassword(password, user.salt) === user.password;
+}
+
+function createTokenForUser(user: User) {
+  const payload = getUserPayload(user);
+  const token = signJwtToken(payload);
+  if (!token) throw { httpCode: 499 };
+  return token;
+}
+
+function signJwtToken(payload: {}) {
+  return jwt.sign(payload, getSecretKey());
+}
+
+function getSecretKey() {
+  const secretKey = process.env.JWT_SECRET_KEY;
+  if (!secretKey) {
+    throw { httpCode: 503, message: 'JWT secret not provided!' } as AppException;
+  }
+  return secretKey;
+}
+
+function getUserPayload(user: User) {
+  const payload: UserPayload = {
+    user: {
+      id: user._id,
+    },
+  };
+  return payload;
+}
+
+function checkReqForErrors(req: Request) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw { httpCode: 400 } as AppException;
+  }
+  return false;
+}
+
+function handleAppErrors(res: Response, error: unknown) {
+  const appError = error as AppException;
+  if (appError.message) console.error(appError.message);
+  res.sendStatus(appError.httpCode);
 }
