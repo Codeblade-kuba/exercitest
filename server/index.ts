@@ -4,21 +4,39 @@ import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 
-import userRoutes from './routes/userRoutes';
+import userRoutes from './routes/user';
 
-dotenv.config();
+const applyAppSettings = (expressInstance: express.Application) => {
+  expressInstance.use(bodyParser.json({ limit: '30mb' }));
+  expressInstance.use(cors());
+};
 
-const app = express();
+const setAppRoutes = (expressInstance: express.Application) => {
+  expressInstance.use('/user', userRoutes);
+};
 
-app.use(bodyParser.json({ limit: '30mb' }));
-app.use(cors())
+const connectAppToDatabse = (expressInstance: express.Application) => {
+  const CONNECTION_URL = process.env.DB_CONNECTION_URL;
+  const PORT = process.env.PORT;
 
-app.use('/user', userRoutes);
+  if (!CONNECTION_URL || !PORT) {
+    console.log('Missing dotenv variables: DB_CONNECTION_URL or PORT');
+    return;
+  }
 
-const CONNECTION_URL = process.env.DB_CONNECTION_URL || '';
-const PORT = process.env.PORT || 5000;
+  mongoose
+    .connect(CONNECTION_URL)
+    .then(() => expressInstance.listen(PORT, () => console.log(`Server Running on Port: http://localhost:${PORT}`)))
+    .catch((error) => console.log(`Database connection error:\n ${error}`));
+};
 
-mongoose
-  .connect(CONNECTION_URL)
-  .then(() => app.listen(PORT, () => console.log(`Server Running on Port: http://localhost:${PORT}`)))
-  .catch((error) => console.error(`Database connection error:\n ${error}`));
+const initApp = () => {
+  dotenv.config();
+  const app = express();
+
+  applyAppSettings(app);
+  setAppRoutes(app);
+  connectAppToDatabse(app);
+};
+
+initApp();
