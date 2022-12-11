@@ -30,7 +30,12 @@ import { SignInComponent } from './pages/sign-in/sign-in.component';
     DashboardComponent,
     SignInComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, ReactiveFormsModule, HttpClientModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+  ],
   providers: [],
   bootstrap: [AppComponent],
 })

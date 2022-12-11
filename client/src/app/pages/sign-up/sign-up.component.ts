@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import {
   FormGroup,
@@ -7,14 +6,10 @@ import {
   AbstractControl,
   ValidatorFn,
   ValidationErrors,
-  FormBuilder,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/services/auth.service';
 
-interface testFn {
-  (control: AbstractControl<any, any>): ValidationErrors | null;
-}
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -57,6 +52,7 @@ export class SignUpComponent {
   }
 
   signUp() {
+    console.log(this.signUpForm.valid);
     if (this.signUpForm.valid) {
       this.authService.signUp(this.signUpForm.value).add(() => {
         this.router.navigate(['/dashboard']);
