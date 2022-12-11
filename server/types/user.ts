@@ -15,5 +15,6 @@ export interface User extends UserBlueprint {
 export type UserPayload = {
   user: {
     id: Types.ObjectId;
+    name: string;
   };
 };

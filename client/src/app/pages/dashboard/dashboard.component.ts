@@ -10,7 +10,7 @@ import { AuthService } from 'src/app/services/auth.service';
 export class DashboardComponent {
   constructor(private router: Router, private authService: AuthService) {}
 
-  username = this.authService.getUsername();
+  username = this.authService.getUserName();
 
   signOut() {
     this.authService.signOut();

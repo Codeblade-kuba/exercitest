@@ -7,6 +7,12 @@
     type="email"
     formControlName="email"
   ></app-input>
+  <app-input-notice *ngIf="formControls.email.errors?.['required']">
+    Email is required
+  </app-input-notice>
+  <app-input-notice *ngIf="formControls.email.errors?.['email']">
+    Email is invalid
+  </app-input-notice>
 
   <app-input
     label="Password"
@@ -14,8 +20,15 @@
     type="password"
     formControlName="password"
   ></app-input>
+  <app-input-notice *ngIf="formControls.password.errors?.['required']">
+    Password is required
+  </app-input-notice>
 
-  <app-button> Sign in </app-button>
+  <div *ngIf="formError">
+    {{ formError }}
+  </div>
+
+  <app-button (click)="signIn()"> Sign in </app-button>
   <div>or</div>
   <app-button href="#">Log in</app-button>
 </form>

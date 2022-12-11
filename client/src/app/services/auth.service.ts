@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { SignInForm, SignUpForm } from '../types/forms';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -20,13 +21,16 @@ export class AuthService {
       .subscribe((res) => this.setToken(res.token));
   }
 
-  signIn(form: Partial<SignInForm>) {
+  signIn(formValues: Partial<SignInForm>) {
     return this.http
       .post<{ message: string; token: string }>(
         `${this.serverRoute}/user/login`,
-        form
+        formValues
       )
-      .subscribe((res) => this.setToken(res.token));
+      .pipe((res: any) => {
+        if (res.token) this.setToken(res.token);
+        return res;
+      });
   }
 
   isLoggedIn() {
@@ -49,17 +53,19 @@ export class AuthService {
     return localStorage.removeItem('token');
   }
 
-  getTokenPayload(token: string) {
+  getTokenPayload() {
+    const token = this.getToken();
+    if (!token) return;
     const base64Url = token.split('.')[1];
     const base64 = base64Url.replace('-', '+').replace('_', '/');
     return JSON.parse(window.atob(base64));
   }
 
   getUserId() {
-    const token = this.getToken() || false;
-    if (!token) return;
+    return this.getTokenPayload().user.id;
+  }
 
-    const payload = this.getTokenPayload(token);
-    return payload.user.id;
+  getUserName() {
+    return this.getTokenPayload().user.name;
   }
 }

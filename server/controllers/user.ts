@@ -71,6 +71,16 @@ function createTokenForUser(user: User) {
   return token;
 }
 
+function getUserPayload(user: User) {
+  const payload: UserPayload = {
+    user: {
+      id: user._id,
+      name: user.name,
+    },
+  };
+  return payload;
+}
+
 function signJwtToken(payload: {}) {
   return jwt.sign(payload, getSecretKey());
 }
@@ -81,15 +91,6 @@ function getSecretKey() {
     throw { httpCode: 503, message: 'JWT secret not provided!' } as AppException;
   }
   return secretKey;
-}
-
-function getUserPayload(user: User) {
-  const payload: UserPayload = {
-    user: {
-      id: user._id,
-    },
-  };
-  return payload;
 }
 
 function checkReqForErrors(req: Request) {
