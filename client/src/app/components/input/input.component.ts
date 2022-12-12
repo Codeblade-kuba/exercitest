@@ -1,5 +1,5 @@
 import { Component, forwardRef, Input } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ValidationErrors } from '@angular/forms';
 
 @Component({
   selector: 'app-input',
@@ -14,10 +14,12 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   ],
 })
 export class InputComponent implements ControlValueAccessor {
+  notice = '';
+  @Input() input: FormControl | null= null;
   @Input() name = '';
   @Input() label = '';
   @Input() type = '';
-  @Input('value') _value = false;
+  @Input('value') _value: string = '';
 
   get value() {
     return this._value;
@@ -29,24 +31,57 @@ export class InputComponent implements ControlValueAccessor {
     this.onTouched();
   }
 
-  onChange: any = () => {};
-  onTouched: any = () => {};
+  onChange: (val?: string) => void = () => {};
 
-  registerOnChange(fn: any) {
+  onTouched: () => void = () => {};
+
+  registerOnChange(fn: () => void) {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: any) {
+  registerOnTouched(fn: () => void) {
     this.onTouched = fn;
   }
 
-  writeValue(value: any) {
+  writeValue(value: string) {
     if (value) {
       this.value = value;
     }
   }
 
-  change(e: any) {
-    this.value = e.target.value;
+  change(e: Event) {
+    this.value = (e.target as HTMLInputElement).value;
+
+    const errors = this.input?.errors;
+    if (errors) {
+      this.handleErrors(errors)
+    } else {
+      this.clearNotice()
+    }
+  }
+
+  handleErrors(error: ValidationErrors) {
+    switch (true) {
+      case error['email']:
+        this.setNotice('Email is invalid')
+        break;
+      case error['required']:
+        this.setNotice('Email is invalid')
+        break;
+      default:
+        break;
+    }
+  }
+
+  setNotice(notice: string) {
+    this.notice = notice;
+  }
+  
+  clearNotice() {
+    this.setNotice('')
+  }
+
+  getNotice() {
+    return this.notice;
   }
 }

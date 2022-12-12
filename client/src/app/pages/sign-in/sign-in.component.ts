@@ -37,12 +37,14 @@ export class SignInComponent {
 
   signInFailed = (res: Response) => {
     switch (res.status) {
-      case 401:
+      case 400 || 401:
         this.setFormError('Invalid email or password');
         break;
       default:
+        this.setFormError('Something went wrong');
         break;
     }
+    this.signInForm.reset();
   };
 
   setFormError(error: string) {
