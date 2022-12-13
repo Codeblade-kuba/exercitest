@@ -10,7 +10,7 @@ import { HeadingComponent } from './components/heading/heading.component';
 import { InputComponent } from './components/input/input.component';
 import { AcceptanceComponent } from './components/acceptance/acceptance.component';
 import { ButtonComponent } from './components/button/button.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { InputNoticeComponent } from './components/input-notice/input-notice.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
@@ -35,6 +35,7 @@ import { SignInComponent } from './pages/sign-in/sign-in.component';
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent],

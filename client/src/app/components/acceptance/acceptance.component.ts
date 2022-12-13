@@ -14,21 +14,8 @@ import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ValidationErrors 
   ],
 })
 export class AcceptanceComponent implements ControlValueAccessor {
-  // TODO: Fix default checked state
-  notice = ''
   @Input('input') input: FormControl<boolean | null> | null = null;
   @Input() name = '';
-  @Input('value') value = false;
-
-  getValue() {
-    return this.value;
-  }
-
-  setValue(value: boolean) {
-    this.value = value;
-    this.onChange(value);
-    this.onTouched();
-  }
 
   onChange: any = () => {};
   onTouched: any = () => {};
@@ -41,15 +28,16 @@ export class AcceptanceComponent implements ControlValueAccessor {
     this.onTouched = fn;
   }
 
-  writeValue(value: any) {
-    if (value) {
-      this.value = value;
-    }
+  checked: boolean = false;
+  writeValue(checked: boolean) {
+    this.checked = checked;
   }
 
-  change() {
-    this.setValue(!this.value)
-    console.log(`touched: ${this.input?.touched}\nerrors: ${this.input?.errors}`)
+  onModelChange(event: boolean) {
+    this.checked = event;
+
+    this.onChange(event);
+    this.onTouched()
   }
 
   getError() {

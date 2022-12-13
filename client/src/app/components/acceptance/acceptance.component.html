@@ -3,7 +3,8 @@
     type="checkbox"
     name="{{ name }}"
     id="{{ name }}"
-    (change)="change()"
+    [ngModel]="checked"
+    (ngModelChange)="onModelChange($event)"
   />
   <label for="{{ name }}">
     <ng-content></ng-content>
