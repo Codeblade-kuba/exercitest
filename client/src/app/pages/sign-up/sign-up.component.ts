@@ -22,9 +22,9 @@ export class SignUpComponent {
   checkPasswords: ValidatorFn = (
     group: AbstractControl
   ): ValidationErrors | null => {
-    let pass = group.get('password')?.value;
-    let confirmPass = group.get('confirmPassword')?.value;
-    return pass === confirmPass ? null : { notSame: true };
+    let password = group.get('password')?.value;
+    let confirmPassword = group.get('confirmPassword')?.value;
+    return password === confirmPassword ? null : { passwordconfirmed: true };
   };
 
   signUpForm = new FormGroup(
@@ -39,7 +39,7 @@ export class SignUpComponent {
         Validators.required,
         Validators.minLength(8),
         Validators.maxLength(30),
-        Validators.pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{0,}$/),
+        this.checkPasswordPattern()
       ]),
       confirmPassword: new FormControl('', [Validators.required]),
       privacyPolicy: new FormControl(false, Validators.requiredTrue),
@@ -47,12 +47,23 @@ export class SignUpComponent {
     this.checkPasswords
   );
 
+  checkPasswordPattern(): ValidatorFn {  
+    return (control: AbstractControl): { [key: string]: any } | null =>  
+        control.value.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{0,}$/) ? null : { passwordpattern: true };
+}
+
+
   get formControls() {
     return this.signUpForm.controls;
   }
 
   signUp() {
-    console.log(this.signUpForm.valid);
+    this.signUpForm.markAllAsTouched()
+    Object.keys(this.formControls).forEach(field => { 
+      const control = this.signUpForm.get(field);
+      console.log(control)
+      control?.setValue('test');
+    });
     if (this.signUpForm.valid) {
       this.authService.signUp(this.signUpForm.value).add(() => {
         this.router.navigate(['/dashboard']);

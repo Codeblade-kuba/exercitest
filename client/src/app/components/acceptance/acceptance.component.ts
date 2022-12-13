@@ -1,5 +1,5 @@
-import { Component, forwardRef, Input } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Component, forwardRef, Input, OnInit } from '@angular/core';
+import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ValidationErrors } from '@angular/forms';
 
 @Component({
   selector: 'app-acceptance',
@@ -15,17 +15,18 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 })
 export class AcceptanceComponent implements ControlValueAccessor {
   // TODO: Fix default checked state
-
+  notice = ''
+  @Input('input') input: FormControl<boolean | null> | null = null;
   @Input() name = '';
-  @Input('value') _value = false;
+  @Input('value') value = false;
 
-  get value() {
-    return this._value;
+  getValue() {
+    return this.value;
   }
 
-  set value(val) {
-    this._value = val;
-    this.onChange(val);
+  setValue(value: boolean) {
+    this.value = value;
+    this.onChange(value);
     this.onTouched();
   }
 
@@ -47,6 +48,22 @@ export class AcceptanceComponent implements ControlValueAccessor {
   }
 
   change() {
-    this.value = !this.value;
+    this.setValue(!this.value)
+    console.log(`touched: ${this.input?.touched}\nerrors: ${this.input?.errors}`)
+  }
+
+  getError() {
+    if (!this.input?.errors) return '';
+
+    let error = ''
+    switch (true) {
+      case this.input.errors.hasOwnProperty('required'):
+        error = 'This acceptance is required'
+        break;
+      default:
+        error = 'Value is invalid'
+        break;
+    }
+    return error;
   }
 }

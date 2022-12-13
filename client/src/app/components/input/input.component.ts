@@ -19,15 +19,15 @@ export class InputComponent implements ControlValueAccessor {
   @Input() name = '';
   @Input() label = '';
   @Input() type = '';
-  @Input('value') _value: string = '';
+  @Input('value') value: string = '';
 
-  get value() {
-    return this._value;
+  getValue() {
+    return this.value;
   }
 
-  set value(val) {
-    this._value = val;
-    this.onChange(val);
+  setValue(newValue: string) {
+    this.value = newValue;
+    this.onChange(newValue);
     this.onTouched();
   }
 
@@ -45,30 +45,43 @@ export class InputComponent implements ControlValueAccessor {
 
   writeValue(value: string) {
     if (value) {
-      this.value = value;
+      this.setValue(value);
     }
   }
 
   change(e: Event) {
-    this.value = (e.target as HTMLInputElement).value;
+    this.setValue((e.target as HTMLInputElement).value)
 
     const errors = this.input?.errors;
     if (errors) {
-      this.handleErrors(errors)
+      this.handleErrors(this.input, errors)
     } else {
       this.clearNotice()
     }
   }
 
-  handleErrors(error: ValidationErrors) {
+  handleErrors(input: any, error: ValidationErrors) {
     switch (true) {
-      case error['email']:
+      case error.hasOwnProperty('email'):
         this.setNotice('Email is invalid')
         break;
-      case error['required']:
-        this.setNotice('Email is invalid')
+      case error.hasOwnProperty('required'):
+        this.setNotice('Field is required')
+        break;
+      case error.hasOwnProperty('minlength'):
+        this.setNotice('Value is too short')
+        break;
+      case error.hasOwnProperty('maxlength'):
+        this.setNotice('Value is too long')
+        break;
+      case error.hasOwnProperty('passwordpattern'):
+        this.setNotice('Password should contain minimum eight characters, at least one uppercase letter, one lowercase letter and one number')
+        break;
+      case error.hasOwnProperty('passwordconfirmed'):
+        this.setNotice("Passwords don't match")
         break;
       default:
+        this.setNotice('Value is invalid')
         break;
     }
   }
