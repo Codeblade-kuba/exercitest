@@ -11,6 +11,7 @@ export async function createUserController(req: Request, res: Response) {
   try {
     checkReqForErrors(req);
     const { name, email, password } = req.body;
+    await checkIfUserExists(email);
     const user = createUser({ name, email, password });
     const token = createTokenForUser(user);
     res.status(201).send({ message: 'User created successfully', token });
@@ -29,6 +30,13 @@ function createUser(userBlueprint: UserBlueprint): User {
   user.save();
 
   return user;
+}
+
+async function checkIfUserExists(email: string) {
+  const user = await UserModel.findOne<User>({ email });
+  if (!!user) {
+    throw { httpCode: 409 };
+  }
 }
 
 function generateHexSalt() {
