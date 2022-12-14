@@ -32,10 +32,16 @@
     formControlName="confirmPassword"
     [input]="formControls.confirmPassword"
   ></app-input>
-  
-  <app-acceptance name="privacy-policy" formControlName="privacyPolicy" [input]="formControls.privacyPolicy">
+
+  <app-acceptance
+    name="privacy-policy"
+    formControlName="privacyPolicy"
+    [input]="formControls.privacyPolicy"
+  >
     I accept <a href="#">privacy policy</a>
   </app-acceptance>
+
+  <app-form-response></app-form-response>
 
   <app-button (click)="signUp()">Sign up</app-button>
   <div>or</div>

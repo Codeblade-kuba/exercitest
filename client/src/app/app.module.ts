@@ -15,6 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { InputNoticeComponent } from './components/input-notice/input-notice.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { SignInComponent } from './pages/sign-in/sign-in.component';
+import { FormResponseComponent } from './components/form-response/form-response.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { SignInComponent } from './pages/sign-in/sign-in.component';
     InputNoticeComponent,
     DashboardComponent,
     SignInComponent,
+    FormResponseComponent,
   ],
   imports: [
     BrowserModule,

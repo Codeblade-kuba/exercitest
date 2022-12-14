@@ -17,9 +17,9 @@
     [input]="formControls.password"
   ></app-input>
 
-  <div *ngIf="formError">
+  <app-form-response *ngIf="formError">
     {{ formError }}
-  </div>
+  </app-form-response>
 
   <app-button (click)="signIn()"> Sign in </app-button>
   <div>or</div>
