@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 export default (req: Request, res: Response, next: NextFunction) => {
+  // TODO: Try/catch?
   const authHeader = req.headers.authorization;
   if (!authHeader) {
     res.status(401).send({ message: 'Authorization header not provided' });

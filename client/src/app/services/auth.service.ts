@@ -36,6 +36,7 @@ export class AuthService {
       });
   }
 
+  // TODO: Description unnecessary
   isLoggedIn() {
     return !!this.getToken();
   }
