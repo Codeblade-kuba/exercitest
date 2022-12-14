@@ -24,6 +24,8 @@ export class SignInComponent {
   }
 
   signIn() {
+    this.signInForm.markAllAsTouched();
+
     if (this.signInForm.valid) {
       this.authService
         .signIn(this.signInForm.value)
@@ -37,7 +39,8 @@ export class SignInComponent {
 
   signInFailed = (res: Response) => {
     switch (res.status) {
-      case 400 || 401:
+      case 400:
+      case 401:
         this.setFormError('Invalid email or password');
         break;
       default:

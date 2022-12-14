@@ -68,7 +68,7 @@ export class InputComponent implements ControlValueAccessor {
         error =
           'Password should contain minimum eight characters, at least one uppercase letter, one lowercase letter and one number';
         break;
-      case this.input.errors.hasOwnProperty('passwordconfirmed'):
+      case this.input.errors.hasOwnProperty('matching'):
         error = "Passwords don't match";
         break;
       default:

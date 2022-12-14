@@ -41,7 +41,7 @@
     I accept <a href="#">privacy policy</a>
   </app-acceptance>
 
-  <app-form-response></app-form-response>
+  <app-form-response *ngIf="formError">{{ formError }}</app-form-response>
 
   <app-button (click)="signUp()">Sign up</app-button>
   <div>or</div>

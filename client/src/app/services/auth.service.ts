@@ -18,7 +18,10 @@ export class AuthService {
         `${this.serverRoute}/user/create`,
         form
       )
-      .subscribe((res) => this.setToken(res.token));
+      .pipe((res: any) => {
+        if (res.token) this.setToken(res.token);
+        return res;
+      });
   }
 
   signIn(formValues: Partial<SignInForm>) {
