@@ -1,5 +1,10 @@
 import { Component, forwardRef, Input } from '@angular/core';
-import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ValidationErrors } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  FormControl,
+  NG_VALUE_ACCESSOR,
+  ValidationErrors,
+} from '@angular/forms';
 
 @Component({
   selector: 'app-input',
@@ -14,87 +19,62 @@ import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ValidationErrors 
   ],
 })
 export class InputComponent implements ControlValueAccessor {
-  notice = '';
-  @Input() input: FormControl | null= null;
+  @Input() input: FormControl | null = null;
   @Input() name = '';
   @Input() label = '';
   @Input() type = '';
-  @Input('value') value: string = '';
 
-  getValue() {
-    return this.value;
-  }
+  onChange: any = () => {};
+  onTouched: any = () => {};
 
-  setValue(newValue: string) {
-    this.value = newValue;
-    this.onChange(newValue);
-    this.onTouched();
-  }
-
-  onChange: (val?: string) => void = () => {};
-
-  onTouched: () => void = () => {};
-
-  registerOnChange(fn: () => void) {
+  registerOnChange(fn: any) {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: () => void) {
+  registerOnTouched(fn: any) {
     this.onTouched = fn;
   }
 
+  value: string = '';
   writeValue(value: string) {
-    if (value) {
-      this.setValue(value);
-    }
+    this.value = value;
   }
 
-  change(e: Event) {
-    this.setValue((e.target as HTMLInputElement).value)
+  onModelChange(event: string) {
+    this.value = event;
 
-    const errors = this.input?.errors;
-    if (errors) {
-      this.handleErrors(this.input, errors)
-    } else {
-      this.clearNotice()
-    }
+    this.onChange(event);
+    this.onTouched();
   }
 
-  handleErrors(input: any, error: ValidationErrors) {
+  getError() {
+    if (!this.input?.errors) return '';
+
+    let error = '';
     switch (true) {
-      case error.hasOwnProperty('email'):
-        this.setNotice('Email is invalid')
+      case this.input.errors.hasOwnProperty('email'):
+        error = 'Email is invalid';
         break;
-      case error.hasOwnProperty('required'):
-        this.setNotice('Field is required')
+      case this.input.errors.hasOwnProperty('required'):
+        error = 'Field is required';
         break;
-      case error.hasOwnProperty('minlength'):
-        this.setNotice('Value is too short')
+      case this.input.errors.hasOwnProperty('minlength'):
+        error = 'Value is too short';
         break;
-      case error.hasOwnProperty('maxlength'):
-        this.setNotice('Value is too long')
+      case this.input.errors.hasOwnProperty('maxlength'):
+        error = 'Value is too long';
         break;
-      case error.hasOwnProperty('passwordpattern'):
-        this.setNotice('Password should contain minimum eight characters, at least one uppercase letter, one lowercase letter and one number')
+      case this.input.errors.hasOwnProperty('passwordpattern'):
+        error =
+          'Password should contain minimum eight characters, at least one uppercase letter, one lowercase letter and one number';
         break;
-      case error.hasOwnProperty('passwordconfirmed'):
-        this.setNotice("Passwords don't match")
+      case this.input.errors.hasOwnProperty('passwordconfirmed'):
+        error = "Passwords don't match";
         break;
       default:
-        this.setNotice('Value is invalid')
+        error = 'Value is invalid';
         break;
     }
-  }
-
-  setNotice(notice: string) {
-    this.notice = notice;
-  }
-  
-  clearNotice() {
-    this.setNotice('')
-  }
-
-  getNotice() {
-    return this.notice;
+    return error;
   }
 }

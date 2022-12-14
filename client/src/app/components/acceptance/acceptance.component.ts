@@ -1,5 +1,9 @@
 import { Component, forwardRef, Input } from '@angular/core';
-import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  FormControl,
+  NG_VALUE_ACCESSOR,
+} from '@angular/forms';
 
 @Component({
   selector: 'app-acceptance',
@@ -37,19 +41,19 @@ export class AcceptanceComponent implements ControlValueAccessor {
     this.checked = event;
 
     this.onChange(event);
-    this.onTouched()
+    this.onTouched();
   }
 
   getError() {
     if (!this.input?.errors) return '';
 
-    let error = ''
+    let error = '';
     switch (true) {
       case this.input.errors.hasOwnProperty('required'):
-        error = 'This acceptance is required'
+        error = 'This acceptance is required';
         break;
       default:
-        error = 'Value is invalid'
+        error = 'Value is invalid';
         break;
     }
     return error;

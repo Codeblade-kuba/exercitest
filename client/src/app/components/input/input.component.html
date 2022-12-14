@@ -4,7 +4,10 @@
     type="{{ type }}"
     name="{{ name }}"
     id="{{ name }}"
-    (change)="change($event)"
+    [ngModel]="value"
+    (ngModelChange)="onModelChange($event)"
   />
 </div>
-<div *ngIf="notice" style="color: orange">{{ notice }}</div>
+<div *ngIf="input?.touched && input?.errors" style="color: blue">
+  {{ getError() }}
+</div>
