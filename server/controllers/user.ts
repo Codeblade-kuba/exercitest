@@ -6,6 +6,7 @@ import UserModel from '../model/user';
 import { validationResult } from 'express-validator';
 import { User, UserBlueprint, UserPayload } from '../types/user';
 import { AppException } from '../types/exceptions';
+import handleAppErrors from '../utils/handleAppErrors';
 
 export async function createUserController(req: Request, res: Response) {
   try {
@@ -35,7 +36,7 @@ function createUser(userBlueprint: UserBlueprint): User {
 async function checkIfUserExists(email: string) {
   const user = await UserModel.findOne<User>({ email });
   if (!!user) {
-    throw { httpCode: 409 };
+    throw { httpCode: 409 } as AppException;
   }
 }
 
@@ -75,7 +76,7 @@ function verifyUserPassword(user: User, password: string) {
 function createTokenForUser(user: User) {
   const payload = getUserPayload(user);
   const token = signJwtToken(payload);
-  if (!token) throw { httpCode: 499 };
+  if (!token) throw { httpCode: 499 } as AppException;
   return token;
 }
 
@@ -107,10 +108,4 @@ function checkReqForErrors(req: Request) {
     throw { httpCode: 400 } as AppException;
   }
   return false;
-}
-
-function handleAppErrors(res: Response, error: unknown) {
-  const appError = error as AppException;
-  if (appError.message) console.error(appError.message);
-  res.sendStatus(appError.httpCode);
 }
