@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import * as moment from 'moment';
 
 import { SignInForm, SignUpForm } from '../types/forms';
-import { Observable } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -14,31 +15,38 @@ export class AuthService {
 
   signUp(form: Partial<SignUpForm>) {
     return this.http
-      .post<{ message: string; token: string }>(
+      .post<{ message: string; token: string; expiresIn: number }>(
         `${this.serverRoute}/user/create`,
         form
       )
-      .pipe((res: any) => {
-        if (res.token) this.setToken(res.token);
-        return res;
-      });
+      .pipe(
+        map((res) => {
+          this.setToken(res.token, res.expiresIn);
+          return res;
+        })
+      );
   }
 
   signIn(formValues: Partial<SignInForm>) {
     return this.http
-      .post<{ message: string; token: string }>(
+      .post<{ message: string; token: string; expiresIn: number }>(
         `${this.serverRoute}/user/login`,
         formValues
       )
-      .pipe((res: any) => {
-        if (res.token) this.setToken(res.token);
-        return res;
-      });
+      .pipe(
+        map((res) => {
+          this.setToken(res.token, res.expiresIn);
+          return res;
+        })
+      );
   }
 
   // TODO: Description unnecessary
   isLoggedIn() {
-    return !!this.getToken();
+    const tokenExpiration = this.getTokenExpiration();
+    const res = moment().isBefore(tokenExpiration);
+    console.log(res);
+    return res;
   }
 
   signOut() {
@@ -49,12 +57,21 @@ export class AuthService {
     return localStorage.getItem('token');
   }
 
-  setToken(token: string) {
-    return localStorage.setItem('token', token);
+  getTokenExpiration() {
+    return localStorage.getItem('expires_at');
+  }
+
+  setToken(token: string, expirationTime: number) {
+    // const expiresAt = moment().add(expirationTime, 'minutes').toISOString();
+    const expiresAt = moment().add(12, 'seconds').toISOString();
+
+    localStorage.setItem('token', token);
+    localStorage.setItem('expires_at', expiresAt);
   }
 
   removeToken() {
-    return localStorage.removeItem('token');
+    localStorage.removeItem('token');
+    localStorage.removeItem('expires_at');
   }
 
   getTokenPayload() {

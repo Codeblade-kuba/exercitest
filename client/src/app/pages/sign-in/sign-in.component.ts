@@ -33,9 +33,9 @@ export class SignInComponent {
     }
   }
 
-  signInSuccess() {
+  signInSuccess = () => {
     this.router.navigate(['/dashboard']);
-  }
+  };
 
   signInFailed = (res: Response) => {
     switch (res.status) {
