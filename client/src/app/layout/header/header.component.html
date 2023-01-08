@@ -3,7 +3,8 @@
   <nav>
     <ul>
       <li><a routerLink="/">Home</a></li>
-      <li><a routerLink="/dashboard">Dashboard</a></li>
+      <li *ngIf="isLoggedIn()"><a routerLink="/dashboard">Dashboard</a></li>
+      <li *ngIf="isLoggedIn()"><a routerLink="/new-training">New training</a></li>
       <li *ngIf="isLoggedIn()"><button (click)="signOut()">Logout</button></li>
     </ul>
   </nav>

@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 
 import userRoutes from './routes/user';
+import trainingRoutes from './routes/training';
 
 const applyAppSettings = (expressInstance: express.Application) => {
   expressInstance.use(bodyParser.json({ limit: '30mb' }));
@@ -13,6 +14,7 @@ const applyAppSettings = (expressInstance: express.Application) => {
 
 const setAppRoutes = (expressInstance: express.Application) => {
   expressInstance.use('/user', userRoutes);
+  expressInstance.use('/trainings', trainingRoutes);
 };
 
 const connectAppToDatabse = (expressInstance: express.Application) => {
