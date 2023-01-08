@@ -41,11 +41,9 @@ export class AuthService {
       );
   }
 
-  // TODO: Description unnecessary
   isLoggedIn() {
     const tokenExpiration = this.getTokenExpiration();
     const res = moment().isBefore(tokenExpiration);
-    console.log(res);
     return res;
   }
 

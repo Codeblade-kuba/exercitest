@@ -17,4 +17,5 @@ export type UserPayload = {
     id: Types.ObjectId;
     name: string;
   };
+  expiresAt: string;
 };

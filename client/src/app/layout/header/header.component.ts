@@ -10,10 +10,14 @@ import { AuthService } from 'src/app/services/auth.service';
 export class HeaderComponent {
   @Input() variant: string[] = [];
 
-  constructor(private router: Router, private authServive: AuthService) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   signOut() {
-    this.authServive.signOut();
+    this.authService.signOut();
     this.router.navigate(['/']);
+  }
+
+  isLoggedIn() {
+    return this.authService.isLoggedIn()
   }
 }

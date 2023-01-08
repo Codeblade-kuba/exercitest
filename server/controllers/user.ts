@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
+import moment from 'moment'
 
 import UserModel from '../model/user';
 import { validationResult } from 'express-validator';
@@ -56,7 +57,7 @@ export async function loginUserController(req: Request, res: Response) {
     const token = createTokenForUser(user);
     return res
       .status(200)
-      .send({ message: 'User authenticated successfully', token, expiresIn: process.env.JWT_EXPIRES_IN });
+      .send({ message: 'User authenticated successfully', token });
   } catch (error) {
     handleAppErrors(res, error);
   }
@@ -81,11 +82,13 @@ function createTokenForUser(user: User) {
 }
 
 function getUserPayload(user: User) {
+  const tokenExpirationDate = moment().add(process.env.JWT_EXPIRATION_TIME_MINUTES, 'm').toISOString()
   const payload: UserPayload = {
     user: {
       id: user._id,
       name: user.name,
     },
+    expiresAt: tokenExpirationDate
   };
   return payload;
 }
