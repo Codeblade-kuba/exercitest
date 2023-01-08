@@ -6,6 +6,7 @@
     name="email"
     type="email"
     formControlName="email"
+    [input]="formControls.email"
   ></app-input>
 
   <app-input
@@ -13,9 +14,14 @@
     name="password"
     type="password"
     formControlName="password"
+    [input]="formControls.password"
   ></app-input>
 
-  <app-button> Sign in </app-button>
+  <app-form-response *ngIf="formError">
+    {{ formError }}
+  </app-form-response>
+
+  <app-button (click)="signIn()"> Sign in </app-button>
   <div>or</div>
-  <app-button href="#">Log in</app-button>
+  <app-button routerLink="/sign-up">Sign up</app-button>
 </form>

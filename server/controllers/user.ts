@@ -1,16 +1,19 @@
 import { Request, Response } from 'express';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
+import moment from 'moment'
 
 import UserModel from '../model/user';
 import { validationResult } from 'express-validator';
 import { User, UserBlueprint, UserPayload } from '../types/user';
 import { AppException } from '../types/exceptions';
+import handleAppErrors from '../utils/handleAppErrors';
 
 export async function createUserController(req: Request, res: Response) {
   try {
     checkReqForErrors(req);
     const { name, email, password } = req.body;
+    await checkIfUserExists(email);
     const user = createUser({ name, email, password });
     const token = createTokenForUser(user);
     res.status(201).send({ message: 'User created successfully', token });
@@ -31,6 +34,13 @@ function createUser(userBlueprint: UserBlueprint): User {
   return user;
 }
 
+async function checkIfUserExists(email: string) {
+  const user = await UserModel.findOne<User>({ email });
+  if (!!user) {
+    throw { httpCode: 409 } as AppException;
+  }
+}
+
 function generateHexSalt() {
   return crypto.randomBytes(16).toString('hex');
 }
@@ -47,7 +57,7 @@ export async function loginUserController(req: Request, res: Response) {
     const token = createTokenForUser(user);
     return res
       .status(200)
-      .send({ message: 'User authenticated successfully', token, expiresIn: process.env.JWT_EXPIRES_IN });
+      .send({ message: 'User authenticated successfully', token });
   } catch (error) {
     handleAppErrors(res, error);
   }
@@ -67,8 +77,20 @@ function verifyUserPassword(user: User, password: string) {
 function createTokenForUser(user: User) {
   const payload = getUserPayload(user);
   const token = signJwtToken(payload);
-  if (!token) throw { httpCode: 499 };
+  if (!token) throw { httpCode: 499 } as AppException;
   return token;
+}
+
+function getUserPayload(user: User) {
+  const tokenExpirationDate = moment().add(process.env.JWT_EXPIRATION_TIME_MINUTES, 'm').toISOString()
+  const payload: UserPayload = {
+    user: {
+      id: user._id,
+      name: user.name,
+    },
+    expiresAt: tokenExpirationDate
+  };
+  return payload;
 }
 
 function signJwtToken(payload: {}) {
@@ -83,25 +105,10 @@ function getSecretKey() {
   return secretKey;
 }
 
-function getUserPayload(user: User) {
-  const payload: UserPayload = {
-    user: {
-      id: user._id,
-    },
-  };
-  return payload;
-}
-
 function checkReqForErrors(req: Request) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     throw { httpCode: 400 } as AppException;
   }
   return false;
-}
-
-function handleAppErrors(res: Response, error: unknown) {
-  const appError = error as AppException;
-  if (appError.message) console.error(appError.message);
-  res.sendStatus(appError.httpCode);
 }

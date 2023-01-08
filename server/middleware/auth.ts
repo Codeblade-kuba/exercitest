@@ -1,31 +1,33 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import { AppException } from '../types/exceptions';
+import handleAppErrors from '../utils/handleAppErrors';
 
 export default (req: Request, res: Response, next: NextFunction) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    res.status(401).send({ message: 'Authorization header not provided' });
-    return;
+  try {
+    const token = getAuthTokenFromRequest(req, res);
+    verifyToken(token);
+    next();
+  } catch (error) {
+    handleAppErrors(res, error);
   }
+};
+
+function getAuthTokenFromRequest(req: Request, res: Response) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) throw { httpCode: 401 };
 
   const token = authHeader.split(' ')[1];
-  if (!token) {
-    res.status(401).send({ message: 'Token not provided' });
-    return;
-  }
+  if (!token) throw { httpCode: 401 };
 
+  return token;
+}
+
+function verifyToken(token: string) {
   const secret = process.env.JWT_SECRET_KEY;
-  if (!secret) {
-    console.log('JWT Secret is empty!');
-    res.status(503);
-    return;
-  }
+  if (!secret) throw { httpCode: 503, message: 'JWT Secret is empty!' } as AppException;
 
   jwt.verify(token, secret, (error) => {
-    if (error) {
-      res.status(401).send({ message: 'Authorization failed' });
-      return;
-    }
-    next();
+    if (error) throw { httpCode: 401 } as AppException;
   });
-};
+}
