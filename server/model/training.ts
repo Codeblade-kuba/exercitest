@@ -2,9 +2,19 @@ import { model, Schema } from 'mongoose';
 
 import { Training, Exercise } from '../types/training';
 
+function arrayIsEmpty(arr: []) {
+  return arr.length > 0;
+}
+
 const ExerciseSchema = new Schema<Exercise>({
-  name: String,
-  reps: [Number],
+  name: {
+    type: String,
+    required: true
+  },
+  reps: {
+    type: [Number],
+    required: true
+  },
   weight: String,
   tempo: Number,
   notes: String,
@@ -19,7 +29,11 @@ const TrainingSchema = new Schema<Training>({
     type: String,
     required: true,
   },
-  exercises: [ExerciseSchema],
+  exercises: {
+    type: [ExerciseSchema],
+    requried: true,
+    validate: arrayIsEmpty
+  },
 });
 
 const Training = model<Training>('Training', TrainingSchema);
