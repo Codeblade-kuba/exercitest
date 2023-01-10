@@ -1,4 +1,5 @@
 import { Types } from 'mongoose';
+import { Training } from './training';
 
 export interface UserBlueprint {
   name: string;
@@ -10,6 +11,7 @@ export interface UserBlueprint {
 export interface User extends UserBlueprint {
   _id: Types.ObjectId;
   salt: string;
+  trainings: [Types.ObjectId];
 }
 
 export type UserPayload = {

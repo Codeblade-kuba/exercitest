@@ -6,7 +6,7 @@ import handleAppErrors from '../utils/handleAppErrors';
 export default (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = getAuthTokenFromRequest(req, res);
-    verifyToken(token);
+    verifyToken(req, token);
     next();
   } catch (error) {
     handleAppErrors(res, error);
@@ -23,11 +23,15 @@ function getAuthTokenFromRequest(req: Request, res: Response) {
   return token;
 }
 
-function verifyToken(token: string) {
+function verifyToken(req: Request, token: string) {
   const secret = process.env.JWT_SECRET_KEY;
   if (!secret) throw { httpCode: 503, message: 'JWT Secret is empty!' } as AppException;
 
-  jwt.verify(token, secret, (error) => {
-    if (error) throw { httpCode: 401 } as AppException;
-  });
+  jwt.verify(token, secret, 
+    (error, decoded) => {
+      if (error) throw { httpCode: 401 } as AppException;
+
+      req.body.id = (decoded as {user: {id: string}}).user.id
+    }
+  );
 }

@@ -9,18 +9,18 @@ function arrayIsEmpty(arr: []) {
 const ExerciseSchema = new Schema<Exercise>({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   reps: {
     type: [Number],
-    required: true
+    required: true,
   },
   weight: String,
   tempo: Number,
   notes: String,
 });
 
-const TrainingSchema = new Schema<Training>({
+export const TrainingSchema = new Schema<Training>({
   name: {
     type: String,
     required: true,
@@ -32,7 +32,7 @@ const TrainingSchema = new Schema<Training>({
   exercises: {
     type: [ExerciseSchema],
     requried: true,
-    validate: arrayIsEmpty
+    validate: arrayIsEmpty,
   },
 });
 

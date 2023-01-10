@@ -1,6 +1,7 @@
 import { model, Schema } from 'mongoose';
 
 import { User } from '../types/user';
+import { TrainingSchema } from './training';
 
 const UserSchema = new Schema<User>({
   name: {
@@ -18,6 +19,9 @@ const UserSchema = new Schema<User>({
   salt: {
     type: String,
     required: true,
+  },
+  trainings: {
+    type: [String],
   },
 });
 
